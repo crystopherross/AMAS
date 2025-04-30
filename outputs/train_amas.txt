@@ -1,0 +1,55 @@
+Agent: Controller | Enumeration: 0
+Locations: R,
+G
+Initial location: G
+Events: {'b1', 'b2', 'a1', 'a2'}
+Repertoire of Choices:
+G -> {{'a1'}, {'b1'}}
+R -> {{'b2', 'a2'}}
+Transitions:
+(R, a2, G),
+(R, b2, G),
+(G, a1, R),
+(G, b1, R),
+Local Propositions: {'free'}
+Proposition Evaluations:
+G -> {'free'}
+R -> {}
+Agent: Train 1 | Enumeration: 1
+Locations: W,
+T,
+A
+Initial location: W
+Events: {'a1', 'a3', 'a2'}
+Repertoire of Choices:
+A -> {{'a3'}}
+W -> {{'a1'}}
+T -> {{'a2'}}
+Transitions:
+(T, a2, A),
+(A, a3, W),
+(W, a1, T),
+Local Propositions: {'inside1'}
+Proposition Evaluations:
+A -> {}
+W -> {}
+T -> {'inside1'}
+Agent: Train 2 | Enumeration: 2
+Locations: W,
+T,
+A
+Initial location: W
+Events: {'b1', 'b2', 'b3'}
+Repertoire of Choices:
+A -> {{'b3'}}
+W -> {{'b1'}}
+T -> {{'b2'}}
+Transitions:
+(A, b3, W),
+(T, b2, A),
+(W, b1, T),
+Local Propositions: {'inside2'}
+Proposition Evaluations:
+A -> {}
+W -> {}
+T -> {'inside2'}

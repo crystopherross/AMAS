@@ -1,0 +1,94 @@
+Agent: Controller | Enumeration: 0
+Locations: {(G, W, W), (G, W, A)},
+{(R, W, T), (R, A, T)},
+{(R, W, T)},
+{(G, W, W), (G, A, W), (G, W, A), (G, A, A)},
+{(R, T, A), (R, T, W)},
+{(G, W, W), (G, A, W), (G, W, A)},
+{(R, T, W)},
+{(G, W, W), (G, A, W)},
+{(G, W, W)}
+Initial location: {(G, W, W)}
+Events: {'b1', 'b2', 'a1', 'a2'}
+Repertoire of Choices:
+{(G, W, W)} -> {{'a1'}, {'b1'}}
+{(R, W, T)} -> {{'b2', 'a2'}}
+{(G, W, W), (G, W, A)} -> {{'a1'}, {'b1'}}
+{(R, T, A), (R, T, W)} -> {{'b2', 'a2'}}
+{(G, W, W), (G, A, W), (G, W, A), (G, A, A)} -> {{'a1'}, {'b1'}}
+{(R, W, T), (R, A, T)} -> {{'b2', 'a2'}}
+{(G, W, W), (G, A, W), (G, W, A)} -> {{'a1'}, {'b1'}}
+{(R, T, W)} -> {{'b2', 'a2'}}
+{(G, W, W), (G, A, W)} -> {{'a1'}, {'b1'}}
+Transitions:
+({(R, T, W)}, a2, {(G, W, W), (G, A, W)}),
+({(G, W, W), (G, A, W)}, b1, {(R, W, T), (R, A, T)}),
+({(R, T, A), (R, T, W)}, a2, {(G, W, W), (G, A, W), (G, W, A), (G, A, A)}),
+({(G, W, W), (G, A, W)}, a1, {(R, T, W)}),
+({(G, W, W)}, b1, {(R, W, T)}),
+({(G, W, W)}, a1, {(R, T, W)}),
+({(G, W, W), (G, A, W), (G, W, A), (G, A, A)}, a1, {(R, T, A), (R, T, W)}),
+({(G, W, W), (G, A, W), (G, W, A)}, b1, {(R, W, T), (R, A, T)}),
+({(G, W, W), (G, W, A)}, a1, {(R, T, A), (R, T, W)}),
+({(G, W, W), (G, W, A)}, b1, {(R, W, T)}),
+({(R, W, T), (R, A, T)}, b2, {(G, W, W), (G, A, W), (G, W, A), (G, A, A)}),
+({(R, W, T)}, b2, {(G, W, W), (G, W, A)}),
+({(G, W, W), (G, A, W), (G, W, A)}, a1, {(R, T, A), (R, T, W)}),
+({(G, W, W), (G, A, W), (G, W, A), (G, A, A)}, b1, {(R, W, T), (R, A, T)}),
+Local Propositions: {'free'}
+Proposition Evaluations:
+{(G, W, W)} -> {'free'}
+{(R, W, T)} -> {}
+{(G, W, W), (G, W, A)} -> {'free'}
+{(R, T, A), (R, T, W)} -> {}
+{(G, W, W), (G, A, W), (G, W, A), (G, A, A)} -> {'free'}
+{(R, W, T), (R, A, T)} -> {}
+{(G, W, W), (G, A, W), (G, W, A)} -> {'free'}
+{(R, T, W)} -> {}
+{(G, W, W), (G, A, W)} -> {'free'}
+Agent: Train 1 | Enumeration: 1
+Locations: {(R, T, W)},
+{(R, A, T), (G, A, W), (G, A, A)},
+{(R, T, A), (R, T, W)},
+{(R, W, T), (G, W, W), (G, W, A)}
+Initial location: {(R, W, T), (G, W, W), (G, W, A)}
+Events: {'a1', 'a3', 'a2'}
+Repertoire of Choices:
+{(R, W, T), (G, W, W), (G, W, A)} -> {{'a1'}}
+{(R, T, A), (R, T, W)} -> {{'a2'}}
+{(R, A, T), (G, A, W), (G, A, A)} -> {{'a3'}}
+{(R, T, W)} -> {{'a2'}}
+Transitions:
+({(R, W, T), (G, W, W), (G, W, A)}, a1, {(R, T, A), (R, T, W)}),
+({(R, T, A), (R, T, W)}, a2, {(R, A, T), (G, A, W), (G, A, A)}),
+({(R, A, T), (G, A, W), (G, A, A)}, a3, {(R, W, T), (G, W, W), (G, W, A)}),
+({(R, T, W)}, a2, {(R, A, T), (G, A, W), (G, A, A)}),
+Local Propositions: {'inside1'}
+Proposition Evaluations:
+{(R, W, T), (G, W, W), (G, W, A)} -> {}
+{(R, T, A), (R, T, W)} -> {'inside1'}
+{(R, A, T), (G, A, W), (G, A, A)} -> {}
+{(R, T, W)} -> {'inside1'}
+Agent: Train 2 | Enumeration: 2
+Locations: {(R, W, T), (R, A, T)},
+{(R, T, A), (G, W, A), (G, A, A)},
+{(R, W, T)},
+{(G, W, W), (G, A, W), (R, T, W)}
+Initial location: {(G, W, W), (G, A, W), (R, T, W)}
+Events: {'b1', 'b2', 'b3'}
+Repertoire of Choices:
+{(G, W, W), (G, A, W), (R, T, W)} -> {{'b1'}}
+{(R, W, T), (R, A, T)} -> {{'b2'}}
+{(R, T, A), (G, W, A), (G, A, A)} -> {{'b3'}}
+{(R, W, T)} -> {{'b2'}}
+Transitions:
+({(R, W, T)}, b2, {(R, T, A), (G, W, A), (G, A, A)}),
+({(R, T, A), (G, W, A), (G, A, A)}, b3, {(G, W, W), (G, A, W), (R, T, W)}),
+({(G, W, W), (G, A, W), (R, T, W)}, b1, {(R, W, T), (R, A, T)}),
+({(R, W, T), (R, A, T)}, b2, {(R, T, A), (G, W, A), (G, A, A)}),
+Local Propositions: {'inside2'}
+Proposition Evaluations:
+{(G, W, W), (G, A, W), (R, T, W)} -> {}
+{(R, W, T), (R, A, T)} -> {'inside2'}
+{(R, T, A), (G, W, A), (G, A, A)} -> {}
+{(R, W, T)} -> {'inside2'}

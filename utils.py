@@ -19,7 +19,7 @@ def card_prod(sets : list[set]) -> set[tuple]:
     return cp
 
 def power_set(s : set) -> set[frozenset]:
-    """Given a set **s** return its power set"""
+    """Given a set **s** return its power set."""
     P = set()
     ls = len(s)
     s = list(s)
@@ -55,22 +55,16 @@ def union_all(iterables: list[Iterable]) -> set[frozenset]:
     return union
 
 def T_str(t: T):
+    """Print a type **T** 'properly', avoiding the non reader-friendly 'frozenset(...)' parts of the string in a 
+    proper manner."""
     if isinstance(t, str):
         return t
     else: 
         return "{" + ", ".join(map(T_str_help, t)) + "}"
 
 def T_str_help(t: tuple[T]):
+    """Helper function of **T_str**, it prints a tuple of elements of type **T** properly."""
     return "(" + ", ".join(map(T_str, t)) + ")"    
-
-
-def frozenset_str(frset: frozenset):
-    def frozenset_str_rec(item):
-        if isinstance(item, frozenset):
-            return f"{{{', '.join(map(str, item))}}}"
-        return str(item)
-    return f"{{{', '.join(frozenset_str_rec(item) for item in frset)}}}"
-
 
 def write_tikz_picture(tikz_pict: tuple[list[tuple[str, str, str]], list[tuple[str, str, str]]], file_name: str = "tikz.txt", fig_caption: str = "caption", fig_label: str = "label"):
     """Take a list of nodes and a list of edges to write a tikz picture to a file, sparing most effort in writting it down in LaTeX.

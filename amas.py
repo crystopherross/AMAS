@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Iterable
 import amas_IOiCGS
 import amas_projection
-from utils import T, T_str as Ts
+from utils import T, T_str as Ts, T_str_help as Tts
 
 
 class AMASagent:
@@ -89,18 +89,18 @@ class AMASagent:
             try:
                 assert R[l]
             except AssertionError:
-                print("InputError: Problem defining R, the list of choices at state", str(l), "is empty.")
+                print("InputError: Problem defining R, the list of choices at state", Ts(l), "is empty.")
                 return
             for choices in R[l]:
                 try:
                     assert choices
                 except AssertionError:
-                    print("InputError: Error defining R, a choice is empty.")
-                for option in choices:
+                    print("InputError: Error defining R, a choice for the repetorire at", Ts(l) , "is empty.")
+                for event in choices:
                     try:
-                        assert option in Evt
+                        assert event in Evt
                     except AssertionError:
-                        print("InputError: Option", option, "for this agent at a choice in local state", str(l), "is not in the list of events for the agent")
+                        print("InputError: Option", event, "for this agent at a choice in local state", Ts(l), "is not in the list of events for the agent")
                         return
             R[l] = set(map(frozenset, R[l]))
         self.R = R
@@ -113,17 +113,17 @@ class AMASagent:
             try:
                 assert l in L
             except:
-                print("InputError: Problem defining T,", str(l), "in", str((l,a,r)), "is not a local state.")
+                print("InputError: Problem defining T,", Ts(l), "in", Tts((l,a,r)), "is not a local state.")
                 return
             try:
                 assert r in L
             except:
-                print("InputError: Problem defining T,", str(r), "in", str((l,a,r)), "is not a local state.")
+                print("InputError: Problem defining T,", Ts(r), "in", Tts((l,a,r)), "is not a local state.")
                 return
             try:
                 assert a in R_union
             except:
-                print("InputError: Problem defining T,", a, "in", str((l,a,r)), "is not among the repetoire of choices of the agent at local state", str(l), ".")
+                print("InputError: Problem defining T,", a, "in", Tts((l,a,r)), "is not among the repetoire of choices of the agent at local state", str(l), ".")
                 return
         self.T = T
         # Evaluation, Local propositions
@@ -132,12 +132,12 @@ class AMASagent:
             try:
                 assert l in L
             except AssertionError:
-                print("InputError: Problem defining V,", str(l), "is not a local state.")
+                print("InputError: Problem defining V,", Ts(l), "is not a local state.")
             for val in V[l]:
                 try: 
                     assert val in PV
                 except AssertionError:
-                    print("InputError: Problem defining V,", val,"is not a local proposition of the agent.")
+                    print("InputError: Problem defining V,", val, "is not a local proposition of the agent.")
                     return
         self.PV = set(PV)
         self.V = V
@@ -170,8 +170,8 @@ class AMASagent:
         while stack:
             sk: frozenset[tuple["T"]] = stack.pop()
             St.add(sk)
-            R[sk] = self.R[list(sk)[0][self.number]] # ? CONTINUE FROM HERE
-            V[sk] = self.V[list(sk)[0][self.number]] # ?
+            R[sk] = self.R[list(sk)[0][self.number]]
+            V[sk] = self.V[list(sk)[0][self.number]]
             for E in R[sk]:
                 Succ: set[frozenset[tuple["T"]]] = set()
                 for q in sk:
@@ -192,7 +192,6 @@ class AMASagent:
                     for q in sk:
                         for qp in sk_succ:
                             for a in Evt:
-                                # print(type(q), type(E), type(a), type(qp))
                                 if (q, E, a, qp) in P.T:
                                     T.add((sk, a, sk_succ))
         return AMASagent(
@@ -333,9 +332,11 @@ class AMAS:
 
     def print(self, write_to = '', mode = 'a'): 
         if write_to:
-            with open(write_to, 'w'):
+            # Clear the file
+            with open("./outputs/" + write_to, 'w'):
                 pass
-            with open(write_to, mode) as handle:
+            # Write to the file
+            with open("./outputs/" + write_to, mode) as handle:
                 for a in self.agents:
                     a.print(write_to, mode)
 

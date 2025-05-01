@@ -336,9 +336,8 @@ class AMAS:
             with open("./outputs/" + write_to, 'w'):
                 pass
             # Write to the file
-            with open("./outputs/" + write_to, mode) as handle:
-                for a in self.agents:
-                    a.print(write_to, mode)
+            for a in self.agents:
+                a.print(write_to, mode)
 
         else:
             for a in self.agents:

@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Iterable
 import amas_IOiCGS
 import amas_projection
+import transducer
 from utils import T, T_str as Ts, T_str_help as Tts
 
 
@@ -205,6 +206,19 @@ class AMASagent:
             PV,
             V
         )
+
+    def create_iF_strategy_transducer(self, ir_strategy: dict[frozenset[tuple["T"]], set[str]], SK: amas_IOiCGS.AMASIOiCGS):
+        """Construct an iF-strategy transducer for this agents out of a local ir-strategy and a expanded game for this
+        agent."""
+        # Ensure that this Agent is one from an expanded game.
+        if type(self.i) == 'str':
+            print("InputError: Cannot create iF-strategy transducer from a non-expanded agent (the current type of this agent's states is 'str').")
+            return
+        # TODO??: Ensure that SK is a valid I/O iCGS in this context (it is a expanded game, not a 'regular' game).
+
+        memory_update_function: dict[tuple[tuple[frozenset[tuple[T]]]], frozenset[tuple[T]]] = {}
+        # TODO: Construct the memory update function
+        return transducer.Transducer(SK.St, SK.i, self.L, self.Evt, memory_update_function, ir_strategy)
 
     def to_tikz_picture(self) -> tuple[list[tuple[str, str, str]], list[tuple[str, str, str]]]:
         """Return a representation of a LaTeX tikz picture for the agent in the form of nodes and edges."""

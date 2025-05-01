@@ -50,33 +50,49 @@ class AMASIOiCGS:
             print("InputError: The input AMAS has some agent (" + agent.name + ") with the event 'eps'. This event name is reserved for the construction of the CGS.")
             return
 
-        # Initial global state
-        temp_i: tuple["T"] = tuple()
+        # # Initial global state
+        # temp_i: tuple["T"] = tuple()
+        # for agent in S.agents:
+        #     temp_i += (agent.i,)
+        # self.i = temp_i
+        # del temp_i
+
+        # # All propositions
+        # PV: set[str] = set()
+        # for agent in S.agents:
+        #     PV.update(agent.PV)
+        # self.PV = PV
+        # del PV
+
+        # # Repertoires
+        # R: list[dict["T", set[frozenset[str]]]] = []
+        # for agent in S.agents:
+        #     R.append(agent.R)
+        # self.R = R
+        # del R
+        # # Events
+        
+        # Evt: set[str] = set()
+        # for agent in S.agents:
+        #     Evt.update(agent.Evt)
+        # self.Evt = Evt
+        # self.Evt.add('eps')
+        # del Evt
+        # Inherited from the AMAS.
+        temp_i: tuple["T"] = tuple() # Initial global state
+        PV: set[str] = set() # All propositions
+        R: list[dict["T", set[frozenset[str]]]] = [] # Repertoires
+        Evt: set[str] = set() # All events
         for agent in S.agents:
             temp_i += (agent.i,)
-            print(temp_i)
-        self.i = temp_i
-        del temp_i
-
-        # All propositions
-        PV: set[str] = set()
-        for agent in S.agents:
             PV.update(agent.PV)
-        self.PV = PV
-        del PV
-
-        # Repertoires
-        R: list[dict["T", set[frozenset[str]]]] = []
-        for agent in S.agents:
             R.append(agent.R)
-        self.R = R
-        del R
-        # Events
-        Evt: set[str] = set()
-        for agent in S.agents:
             Evt.update(agent.Evt)
-        self.Evt = Evt
+        self.i, self.PV, self.R, self.Evt = temp_i, PV, R, Evt
         self.Evt.add('eps')
+        del temp_i
+        del PV
+        del R
         del Evt
 
         # Construct the set of global states and the transitions by
@@ -120,11 +136,10 @@ class AMASIOiCGS:
                             else: to += (g_i(state,i),)
                         T.add((state, prod, out, to))
                         if to not in St:
-                            # St.add(to)
                             St_stack.append(to)
                 # (**)
                 else:
-                    non_silent_events = self.Evt.difference(set(['eps']))        
+                    non_silent_events = self.Evt.difference({'eps'})        
                     for prod in card_prod([set(map(frozenset,S.agents[i].R[g_i(state, i)])) for i in range(len(S.agents))]):
                         valid = True
                         for a in non_silent_events:

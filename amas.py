@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Iterable
 import amas_IOiCGS
 import amas_projection
-import transducer
+import logging
 from utils import T, T_str as Ts, T_str_help as Tts
 
 
@@ -143,7 +143,7 @@ class AMASagent:
         self.PV = set(PV)
         self.V = V
 
-    def expand(self, M: amas_IOiCGS.AMASIOiCGS, P: amas_projection.AgentProjection, name: str = None) -> "AMASagent":
+    def expand(self, M: amas_IOiCGS.AMASIOiCGS, P: amas_projection.AgentProjection, name: str = None, trace_file = '') -> "AMASagent":
         """Construct the MKBSC expansion for this AMAS agent whose projection on I/O iCGS **M** is **P**.
 
         Attributes
@@ -154,6 +154,22 @@ class AMASagent:
             The projection of this agent on **M**.
             
         """
+
+        # Initialize Logging
+        logger = logging.getLogger(f'exp_construct.{trace_file}')
+
+        if trace_file and not logger.handlers:
+            file_handler = logging.FileHandler('./outputs/' + trace_file, mode='w')
+            formatter = logging.Formatter('%(message)s')
+            file_handler.setFormatter(formatter)
+            logger.addHandler(file_handler)
+            logger.setLevel(logging.INFO)
+            logger.propagate = False
+        def log(message): 
+            """Log message only if the file name is valid (and thus the logger is initialized)."""
+            if trace_file: logger.info(message)
+            else: return
+
         if name == None: name = self.name
         # Inherited from P
         Evt: set[str] = P.Evt
@@ -161,40 +177,63 @@ class AMASagent:
         # Initialize R_i^K, V_i^K 
         R: dict[frozenset[tuple["T"]], set[frozenset[str]]] = {}
         V: dict[frozenset[tuple["T"]], set[str]]= {}
-        # Compute St_i^K, i_i^K, T_i^K
+        # Construct St_i^K, i_i^K, T_i^K
+        log("Constructing states and transitions.\n")
         # Step 1
+        log("Step 1: Initializing")
         i: frozenset[tuple["T"]] = P.eps_closure({P.i})
         St: set[frozenset[tuple["T"]]] = set()
         T: set[tuple[frozenset[tuple["T"]], str, frozenset[tuple["T"]]]] = set()
+        log(f"Initial state: {Ts(i)}")
+        log(f"StK = {{{Ts(i)}}}, T = {{}}\n")
         # Steps 2, 3
         stack: list[frozenset[tuple["T"]]] = [i]
         while stack:
             sk: frozenset[tuple["T"]] = stack.pop()
+            log(f"sK = {Ts(sk)}")
             St.add(sk)
+            log(f"Added {Ts(sk)} to StK.")
+            # Set the values of repertoire function and valuations for sk
             R[sk] = self.R[list(sk)[0][self.number]]
+            log(f"RK({Ts(sk)}) = {{{", ".join(map(lambda x: str(set(x)), R[sk]))}}}")
             V[sk] = self.V[list(sk)[0][self.number]]
+            log(f"VK({Ts(sk)}) = {V[sk]}")
             for E in R[sk]:
+                log(f"E = {set(E)}")
                 Succ: set[frozenset[tuple["T"]]] = set()
                 for q in sk:
                     for (g, g_in, _, gp) in P.T:
                         if g == q and g_in == E:
                             Succ.add(gp)
+                log(f"\t(a) Succ = {Ts(Succ)}")
                 Succp = P.eps_closure(Succ)
+                log(f"\t(b) Succp = {Ts(Succp)}")
                 SuccK: set[frozenset[tuple["T"]]] = set()
                 equiv_part: dict["T", list[tuple["T"]]] = {}
                 for q in Succp:
                     if q[self.number] not in equiv_part.keys(): equiv_part[q[self.number]] = [q]
                     else: equiv_part[q[self.number]].append(q)
                 for v in equiv_part.values(): SuccK.add(frozenset(v))
+                log(f"\t(c) SuccK = {{{", ".join(map(Ts, SuccK))}}}")
+                log(f"\t(d) States added to StK:")
                 for q in SuccK:
+                    log(f"\t\t{Ts(q)}")
                     if q not in St: stack.append(q)
                 St.update(SuccK)
+                log(f"\t(e) Transitions added:")
                 for sk_succ in SuccK:
                     for q in sk:
                         for qp in sk_succ:
                             for a in Evt:
                                 if (q, E, a, qp) in P.T:
                                     T.add((sk, a, sk_succ))
+                                    log(f"\t\t({Ts(sk)}, {a}, {Ts(sk_succ)})")
+                log("")
+        # Shut down logger
+        if trace_file:
+            for handler in logger.handlers:
+                handler.close()
+                logger.removeHandler(handler)
         return AMASagent(
             self.name,
             self.number,
@@ -206,19 +245,6 @@ class AMASagent:
             PV,
             V
         )
-
-    def create_iF_strategy_transducer(self, ir_strategy: dict[frozenset[tuple["T"]], set[str]], SK: amas_IOiCGS.AMASIOiCGS):
-        """Construct an iF-strategy transducer for this agents out of a local ir-strategy and a expanded game for this
-        agent."""
-        # Ensure that this Agent is one from an expanded game.
-        if type(self.i) == 'str':
-            print("InputError: Cannot create iF-strategy transducer from a non-expanded agent (the current type of this agent's states is 'str').")
-            return
-        # TODO??: Ensure that SK is a valid I/O iCGS in this context (it is a expanded game, not a 'regular' game).
-
-        memory_update_function: dict[tuple[tuple[frozenset[tuple[T]]]], frozenset[tuple[T]]] = {}
-        # TODO: Construct the memory update function
-        return transducer.Transducer(SK.St, SK.i, self.L, self.Evt, memory_update_function, ir_strategy)
 
     def to_tikz_picture(self) -> tuple[list[tuple[str, str, str]], list[tuple[str, str, str]]]:
         """Return a representation of a LaTeX tikz picture for the agent in the form of nodes and edges."""
@@ -340,7 +366,7 @@ class AMAS:
             P = self.project(M)
         expanded_agents: list[AMASagent] = []
         for agent in self.agents:
-            expanded_agents.append(agent.expand(M, P.projections[agent.number]))
+            expanded_agents.append(agent.expand(M, P.projections[agent.number], trace_file=f'exp_const{agent.number}.trace'))
         return AMAS(expanded_agents)
         
 

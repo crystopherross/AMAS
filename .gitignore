@@ -1,4 +1,6 @@
 __pycache__/
-/inputs
+/inputs/abp1.json
+/inputs/abp2.json
+/inputs/abp3.json
 *.txt
 *.trace

@@ -37,7 +37,7 @@ class AMASIOiCGS:
         """
         Construct an I/O iCGS for an input AMAS
 
-        Attributes
+        Parameters
         ----------
         name : S
             AMAS to extend. Beware that this AMAS should not have an event with name 'eps' as this name is reserved

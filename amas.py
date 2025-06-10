@@ -146,7 +146,7 @@ class AMASagent:
     def expand(self, M: amas_IOiCGS.AMASIOiCGS, P: amas_projection.AgentProjection, name: str = None, trace_file = '') -> "AMASagent":
         """Construct the MKBSC expansion for this AMAS agent whose projection on I/O iCGS **M** is **P**.
 
-        Attributes
+        Parameters
         ----------
         M : amas_IOiCGS.AMASIOiCGS
             The I/O iCGS that was induced on the AMAS this agent is part of.
@@ -234,17 +234,7 @@ class AMASagent:
             for handler in logger.handlers:
                 handler.close()
                 logger.removeHandler(handler)
-        return AMASagent(
-            self.name,
-            self.number,
-            St,
-            i,
-            Evt,
-            R,
-            T,
-            PV,
-            V
-        )
+        return AMASagent(self.name, self.number, St, i, Evt, R, T, PV, V)
 
     def to_tikz_picture(self) -> tuple[list[tuple[str, str, str]], list[tuple[str, str, str]]]:
         """Return a representation of a LaTeX tikz picture for the agent in the form of nodes and edges."""

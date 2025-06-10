@@ -46,6 +46,9 @@ class AgentProjection:
             Optional: The I/O iCGS to project on the agent given by **i**. By default the constructor will call
             S.joint_game(), creating M in the process, to avoid recomputing this CGS it is recommended to have a
             suitable value here
+        trace_file : str
+            The name of the file where the trace of the algorithm (construction of transitions) is recorded.
+            By default no trace file is created.
         """
 
         # Initialize Logging

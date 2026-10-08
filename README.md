@@ -1,6 +1,6 @@
 # AMAS
 ## Introduction
-This repository contains an implementation of AMAS and its structures defined by Gurov et al. [1], relevant for our bachelor's thesis. This README file will contain information about the usage of the tool.
+This repository contains an implementation of AMAS and its structures defined by Gurov et al. [1], relevant for our bachelor's thesis [2]. This README file will contain information about the usage of the tool.
 
 ## Usage
 To use this tool import the contents of `amas.py`, `amas_IOiCGS.py`, `amas_projection.py`, `utils.py`, and optionally `read_input.py` in the source file. Construct an AMAS by using the constructors from `amas.py`, or using the function defined in `read_input.py` to construct an AMAS from a `.json` file in the `inputs` folder. The rest of the classes are used to construct I/O iCGSs and applying the MKBSC algorithm on the AMAS. The classes have methods to print the structures into files, some of the constructors have the choice to record a construction trace into a `.trace` file, these are saved in the `outputs` folder. 
@@ -20,6 +20,8 @@ Represents an I/O iCGS induced on some AMAS. The constructor takes an AMAS and o
 Represents the projection of an AMAS agent on an I/O iCGS. The constructor takes an AMAS, the number of the agent and optionally a an `AMASIOiCGS` and the name for a `.trace` file where the steps of construction are recorded. The implementation of this class lies in `amas_projection.py`.
 ### MKBSC_AMAS_Projection
 Represents an AMAS's projection on an induced I/O iCGS, it is mainly described as a (ordered) list of `AgentProjection` objects. The implementation of this class lies in `amas_projection.py`. 
+## Minimal example
+In the `inputs` directory there are 2 examples in `.json` format, which were studied in the paper [2], these are read and used in `main.py`, showcasing the usage of the constructors and methods implemented.
 ## Extra files
 The `utils.py` file contains utility functions, and more importantly, the `T` type, representing an AMAS's state, `read_input.py` contains the function that reads a `.json` file in the `inputs` folder and constructs an AMAS.
 ## References
@@ -30,3 +32,5 @@ and Model Checking for Coalitional Strategies”. In: CoRR abs/2412.06706
 (2024). doi: 10 . 48550 / ARXIV . 2412 . 06706. arXiv: 2412 .
 06706. url: https://doi.org/10.48550/arXiv.2412.
 06706.
+
+[2]. Crystopher W. Mariño Ross, Alexander Widén. “Modeling and Knowledge-based Strategy Synthesis for Asynchronous Multi-Agent Systems” (Dissertation). (2025). url: https://urn.kb.se/resolve?urn=urn:nbn:se:kth:diva-367566.
